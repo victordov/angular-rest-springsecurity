@@ -1,21 +1,19 @@
 package net.dontdrinkandroot.example.angularrestspringsecurity.configuration;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import net.dontdrinkandroot.example.angularrestspringsecurity.dao.DataBaseInitializer;
 import net.dontdrinkandroot.example.angularrestspringsecurity.dao.newsentry.JpaNewsEntryDao;
 import net.dontdrinkandroot.example.angularrestspringsecurity.dao.user.JpaUserDao;
 import net.dontdrinkandroot.example.angularrestspringsecurity.rest.AuthenticationTokenProcessingFilter;
 import net.dontdrinkandroot.example.angularrestspringsecurity.rest.UnauthorizedEntryPoint;
-import org.apache.commons.dbcp.BasicDataSource;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.*;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -27,12 +25,23 @@ import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+import java.util.Properties;
+
+import static net.dontdrinkandroot.example.angularrestspringsecurity.ConfigProperties.*;
+
+
 @Configuration
-@ComponentScan(basePackages = "net.dontdrinkandroot.example.angularrestspringsecurity")
+@ComponentScan(basePackages = BASE_PACKAGES)
 @EnableTransactionManagement
 @EnableWebSecurity
+@PropertySource(PROPERTY_SOURCE)
 public class AppConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private Environment env;
+    
     @Autowired
     private AuthenticationManagerBuilder auth;
 
@@ -41,36 +50,43 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
     public AppConfig() {
         // TODO Auto-generated constructor stub
     }
-
-    @Bean(name = "dataSource")
-    public BasicDataSource getDataSource() {
-        BasicDataSource ds = new BasicDataSource();
-        ds.setDriverClassName("org.hsqldb.jdbcDriver");
-        ds.setUrl("jdbc:hsqldb:mem:example");
-        ds.setUsername("sa");
-        ds.setPassword("");
-        return ds;
+    
+    @Bean(destroyMethod = "close",name = "dataSource")
+    DataSource getDataSource() {
+        HikariConfig dataSourceConfig = new HikariConfig();
+        dataSourceConfig.setDriverClassName(env.getRequiredProperty(DB_DRIVER));
+        dataSourceConfig.setJdbcUrl(env.getRequiredProperty(DB_URL));
+        dataSourceConfig.setUsername(env.getRequiredProperty(DB_USER_NAME));
+        dataSourceConfig.setPassword(env.getRequiredProperty(DB_PASSWORD));
+        
+        return new HikariDataSource(dataSourceConfig);
     }
 
     @Bean(name = "entityManagerFactory")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
-        entityManagerFactory.setDataSource(getDataSource());
-        entityManagerFactory
-                .setPackagesToScan("net.dontdrinkandroot.example.angularrestspringsecurity.entity");
+        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+        
+        entityManagerFactoryBean.setDataSource(getDataSource());
+        entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        entityManagerFactoryBean.setPackagesToScan(ENTITY_PACKAGE);
 
-        HibernateJpaVendorAdapter jpaAdaptor = new HibernateJpaVendorAdapter();
-        jpaAdaptor.setShowSql(true);
-        jpaAdaptor.setGenerateDdl(true);
-        jpaAdaptor.setDatabase(Database.HSQL);
+        Properties jpaProperties = new Properties();
 
-        entityManagerFactory.setJpaVendorAdapter(jpaAdaptor);
-        return entityManagerFactory;
+        jpaProperties.put(HIBERNATE_DIALECT, env.getRequiredProperty(HIBERNATE_DIALECT));
+        jpaProperties.put(HIBERNATE_HBM2DDL_AUTO, env.getRequiredProperty(HIBERNATE_HBM2DDL_AUTO));
+        jpaProperties.put(HIBERNATE_EJB_NAMING_STRATEGY, env.getRequiredProperty(HIBERNATE_EJB_NAMING_STRATEGY));
+        jpaProperties.put(HIBERNATE_SHOW_SQL, env.getRequiredProperty(HIBERNATE_SHOW_SQL));
+        jpaProperties.put(HIBERNATE_FORMAT_SQL, env.getRequiredProperty(HIBERNATE_FORMAT_SQL));
+
+        entityManagerFactoryBean.setJpaProperties(jpaProperties);
+        return entityManagerFactoryBean;
     }
 
     @Bean(name = "transactionManager")
-    public JpaTransactionManager getTransactionManager() {
-        return new JpaTransactionManager(entityManagerFactory().getObject());
+    JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(entityManagerFactory);
+        return transactionManager;
     }
 
     @Bean
@@ -107,8 +123,7 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
     @DependsOn({"userDao", "passwordEncoder"})
     public AuthenticationManager authenticationManager() {
         try {
-            auth.userDetailsService(userDao()).passwordEncoder(
-                    getPasswordEncoder());
+            auth.userDetailsService(userDao()).passwordEncoder(getPasswordEncoder());
             AuthenticationManager authenticationManager = auth.build();
             return authenticationManager;
         } catch (Exception e) {
@@ -128,8 +143,7 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .authenticationEntryPoint(getUnauthorizedEntryPoint())
                 .and()
-                .addFilterBefore(getAuthenticationTokenProcessingFilter(),
-                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(getAuthenticationTokenProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests().antMatchers("/**").access("permitAll")
                 .antMatchers("/rest/user/authenticate").access("permitAll")
                 .antMatchers(HttpMethod.GET, "/rest/news/**")
