@@ -1,22 +1,21 @@
 package net.dontdrinkandroot.example.angularrestspringsecurity.dao;
 
-import java.util.List;
-
 import net.dontdrinkandroot.example.angularrestspringsecurity.entity.Entity;
 
-
-public interface Dao<T extends Entity, I>
-{
-
-	List<T> findAll();
+import java.util.List;
 
 
-	T find(I id);
+public interface Dao<T extends Entity, I> {
+
+    List<T> findAll();
 
 
-	T save(T newsEntry);
+    T find(I id);
 
 
-	void delete(I id);
+    T save(T newsEntry);
+
+
+    void delete(I id);
 
 }

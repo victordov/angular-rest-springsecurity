@@ -1,77 +1,72 @@
 package net.dontdrinkandroot.example.angularrestspringsecurity.rest;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.codec.Hex;
 
-
-public class TokenUtils
-{
-
-	public static final String MAGIC_KEY = "obfuscate";
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 
-	public static String createToken(UserDetails userDetails)
-	{
-		/* Expires in one hour */
-		long expires = System.currentTimeMillis() + 1000L * 60 * 60;
+public class TokenUtils {
 
-		StringBuilder tokenBuilder = new StringBuilder();
-		tokenBuilder.append(userDetails.getUsername());
-		tokenBuilder.append(":");
-		tokenBuilder.append(expires);
-		tokenBuilder.append(":");
-		tokenBuilder.append(TokenUtils.computeSignature(userDetails, expires));
-
-		return tokenBuilder.toString();
-	}
+    public static final String MAGIC_KEY = "obfuscate";
 
 
-	public static String computeSignature(UserDetails userDetails, long expires)
-	{
-		StringBuilder signatureBuilder = new StringBuilder();
-		signatureBuilder.append(userDetails.getUsername());
-		signatureBuilder.append(":");
-		signatureBuilder.append(expires);
-		signatureBuilder.append(":");
-		signatureBuilder.append(userDetails.getPassword());
-		signatureBuilder.append(":");
-		signatureBuilder.append(TokenUtils.MAGIC_KEY);
+    public static String createToken(UserDetails userDetails) {
+        /* Expires in one hour */
+        long expires = System.currentTimeMillis() + 1000L * 60 * 60;
 
-		MessageDigest digest;
-		try {
-			digest = MessageDigest.getInstance("MD5");
-		} catch (NoSuchAlgorithmException e) {
-			throw new IllegalStateException("No MD5 algorithm available!");
-		}
+        StringBuilder tokenBuilder = new StringBuilder();
+        tokenBuilder.append(userDetails.getUsername());
+        tokenBuilder.append(":");
+        tokenBuilder.append(expires);
+        tokenBuilder.append(":");
+        tokenBuilder.append(TokenUtils.computeSignature(userDetails, expires));
 
-		return new String(Hex.encode(digest.digest(signatureBuilder.toString().getBytes())));
-	}
+        return tokenBuilder.toString();
+    }
 
 
-	public static String getUserNameFromToken(String authToken)
-	{
-		if (null == authToken) {
-			return null;
-		}
+    public static String computeSignature(UserDetails userDetails, long expires) {
+        StringBuilder signatureBuilder = new StringBuilder();
+        signatureBuilder.append(userDetails.getUsername());
+        signatureBuilder.append(":");
+        signatureBuilder.append(expires);
+        signatureBuilder.append(":");
+        signatureBuilder.append(userDetails.getPassword());
+        signatureBuilder.append(":");
+        signatureBuilder.append(TokenUtils.MAGIC_KEY);
 
-		String[] parts = authToken.split(":");
-		return parts[0];
-	}
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("No MD5 algorithm available!");
+        }
+
+        return new String(Hex.encode(digest.digest(signatureBuilder.toString().getBytes())));
+    }
 
 
-	public static boolean validateToken(String authToken, UserDetails userDetails)
-	{
-		String[] parts = authToken.split(":");
-		long expires = Long.parseLong(parts[1]);
-		String signature = parts[2];
+    public static String getUserNameFromToken(String authToken) {
+        if (null == authToken) {
+            return null;
+        }
 
-		if (expires < System.currentTimeMillis()) {
-			return false;
-		}
+        String[] parts = authToken.split(":");
+        return parts[0];
+    }
 
-		return signature.equals(TokenUtils.computeSignature(userDetails, expires));
-	}
+
+    public static boolean validateToken(String authToken, UserDetails userDetails) {
+        String[] parts = authToken.split(":");
+        long expires = Long.parseLong(parts[1]);
+        String signature = parts[2];
+
+        if (expires < System.currentTimeMillis()) {
+            return false;
+        }
+
+        return signature.equals(TokenUtils.computeSignature(userDetails, expires));
+    }
 }

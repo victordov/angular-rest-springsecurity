@@ -5,7 +5,6 @@ import net.dontdrinkandroot.example.angularrestspringsecurity.dao.newsentry.JpaN
 import net.dontdrinkandroot.example.angularrestspringsecurity.dao.user.JpaUserDao;
 import net.dontdrinkandroot.example.angularrestspringsecurity.rest.AuthenticationTokenProcessingFilter;
 import net.dontdrinkandroot.example.angularrestspringsecurity.rest.UnauthorizedEntryPoint;
-
 import org.apache.commons.dbcp.BasicDataSource;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,7 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationManagerBuilder auth;
 
     //DATABASE SETUP
-            
+
     public AppConfig() {
         // TODO Auto-generated constructor stub
     }
@@ -85,7 +84,7 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean(name = "dataBaseInitializer", initMethod = "initDataBase")
-    @DependsOn({ "userDao", "newsEntryDao","passwordEncoder" })
+    @DependsOn({"userDao", "newsEntryDao", "passwordEncoder"})
     public DataBaseInitializer dataBaseInitializer() {
         return new DataBaseInitializer(userDao(), newsEntryDao(), getPasswordEncoder());
     }
@@ -97,7 +96,7 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
         return new ObjectMapper();
     }
 
-     //	 SPRING SECURITY SETUP
+    //	 SPRING SECURITY SETUP
 
     @Bean(name = "passwordEncoder")
     public StandardPasswordEncoder getPasswordEncoder() {
@@ -105,7 +104,7 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean(name = "authenticationManager")
-    @DependsOn({ "userDao", "passwordEncoder" })
+    @DependsOn({"userDao", "passwordEncoder"})
     public AuthenticationManager authenticationManager() {
         try {
             auth.userDetailsService(userDao()).passwordEncoder(

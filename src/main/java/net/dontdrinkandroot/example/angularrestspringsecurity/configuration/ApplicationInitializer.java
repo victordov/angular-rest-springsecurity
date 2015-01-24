@@ -7,18 +7,19 @@ package net.dontdrinkandroot.example.angularrestspringsecurity.configuration;
  * @author Hisham
  *
  */
-import com.sun.jersey.spi.spring.container.servlet.SpringServlet;
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
 
+import com.sun.jersey.spi.spring.container.servlet.SpringServlet;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
-public class ApplicationInitializer implements WebApplicationInitializer{
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
+
+public class ApplicationInitializer implements WebApplicationInitializer {
 
     @Override
     public void onStartup(ServletContext servletContext)
@@ -33,7 +34,7 @@ public class ApplicationInitializer implements WebApplicationInitializer{
         ServletRegistration.Dynamic dispatcher =
                 servletContext.addServlet("RestService", new SpringServlet());
         dispatcher.setInitParameter("com.sun.jersey.config.property.packages", "net.dontdrinkandroot.example.angularrestspringsecurity.rest");
-        dispatcher.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature","true");
+        dispatcher.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/rest/*");
 
@@ -44,4 +45,3 @@ public class ApplicationInitializer implements WebApplicationInitializer{
 
     }
 }
-	
