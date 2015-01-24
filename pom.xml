@@ -17,8 +17,8 @@
         <junit.version>4.12</junit.version>
         <hikaricp.version>2.2.5</hikaricp.version>
 
-        <org.hibernate.version>4.3.5.Final</org.hibernate.version>
-        <org.hsqldb.version>2.3.2</org.hsqldb.version>
+        <org.hibernate.version>4.3.8.Final</org.hibernate.version>
+        <h2.version>1.4.185</h2.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
 
         <maven-compiler-plugin.version>3.2</maven-compiler-plugin.version>
@@ -127,7 +127,6 @@
             <version>${spring.security.version}</version>
         </dependency>
 
-
         <!--JAX-RS-->
         <dependency>
             <groupId>com.sun.jersey.contribs</groupId>
@@ -171,9 +170,9 @@
 
         <!--DB-->
         <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>${org.hsqldb.version}</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
         </dependency>
 
         <dependency>
@@ -181,6 +180,7 @@
             <artifactId>HikariCP</artifactId>
             <version>${hikaricp.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
