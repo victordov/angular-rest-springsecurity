@@ -1,8 +1,8 @@
-package net.dontdrinkandroot.example.angularrestspringsecurity.rest.resources;
+package net.dontdrinkandroot.example.angularrestspringsecurity.resources;
 
 import net.dontdrinkandroot.example.angularrestspringsecurity.JsonViews;
-import net.dontdrinkandroot.example.angularrestspringsecurity.dao.newsentry.NewsEntryDao;
 import net.dontdrinkandroot.example.angularrestspringsecurity.entity.NewsEntry;
+import net.dontdrinkandroot.example.angularrestspringsecurity.services.NewsService;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -29,7 +29,7 @@ public class NewsEntryResource {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private NewsEntryDao newsEntryDao;
+    private NewsService newsService;
 
     @Autowired
     private ObjectMapper mapper;
@@ -46,7 +46,7 @@ public class NewsEntryResource {
         } else {
             viewWriter = this.mapper.writerWithView(JsonViews.User.class);
         }
-        List<NewsEntry> allEntries = this.newsEntryDao.findAll();
+        List<NewsEntry> allEntries = (List)this.newsService.findAll();
 
         return viewWriter.writeValueAsString(allEntries);
     }
@@ -58,7 +58,7 @@ public class NewsEntryResource {
     public NewsEntry read(@PathParam("id") Long id) {
         this.logger.info("read(id)");
 
-        NewsEntry newsEntry = this.newsEntryDao.find(id);
+        NewsEntry newsEntry = this.newsService.find(id);
         if (newsEntry == null) {
             throw new WebApplicationException(404);
         }
@@ -71,8 +71,7 @@ public class NewsEntryResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public NewsEntry create(NewsEntry newsEntry) {
         this.logger.info("create(): " + newsEntry);
-
-        return this.newsEntryDao.save(newsEntry);
+        return this.newsService.save(newsEntry);
     }
 
 
@@ -83,7 +82,7 @@ public class NewsEntryResource {
     public NewsEntry update(@PathParam("id") Long id, NewsEntry newsEntry) {
         this.logger.info("update(): " + newsEntry);
 
-        return this.newsEntryDao.save(newsEntry);
+        return this.newsService.save(newsEntry);
     }
 
 
@@ -93,14 +92,14 @@ public class NewsEntryResource {
     public void delete(@PathParam("id") Long id) {
         this.logger.info("delete(id)");
 
-        this.newsEntryDao.delete(id);
+        this.newsService.delete(id);
     }
 
 
     private boolean isAdmin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
-        if (principal instanceof String && ((String) principal).equals("anonymousUser")) {
+        if (principal instanceof String && (principal).equals("anonymousUser")) {
             return false;
         }
         UserDetails userDetails = (UserDetails) principal;

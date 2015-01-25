@@ -1,6 +1,6 @@
-package net.dontdrinkandroot.example.angularrestspringsecurity.rest.resources;
+package net.dontdrinkandroot.example.angularrestspringsecurity.resources;
 
-import net.dontdrinkandroot.example.angularrestspringsecurity.rest.TokenUtils;
+import net.dontdrinkandroot.example.angularrestspringsecurity.resources.auth.TokenUtils;
 import net.dontdrinkandroot.example.angularrestspringsecurity.transfer.TokenTransfer;
 import net.dontdrinkandroot.example.angularrestspringsecurity.transfer.UserTransfer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class UserResource {
     @Autowired
     @Qualifier("authenticationManager")
     private AuthenticationManager authManager;
-
+    
 
     /**
      * Retrieves the currently logged in user.
@@ -62,8 +62,7 @@ public class UserResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public TokenTransfer authenticate(@FormParam("username") String username, @FormParam("password") String password) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(username, password);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
         Authentication authentication = this.authManager.authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

@@ -1,4 +1,4 @@
-package net.dontdrinkandroot.example.angularrestspringsecurity.rest;
+package net.dontdrinkandroot.example.angularrestspringsecurity.resources.auth;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

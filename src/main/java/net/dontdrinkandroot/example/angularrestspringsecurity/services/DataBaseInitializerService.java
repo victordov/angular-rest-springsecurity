@@ -1,56 +1,41 @@
-package net.dontdrinkandroot.example.angularrestspringsecurity.dao;
+package net.dontdrinkandroot.example.angularrestspringsecurity.services;
 
-import net.dontdrinkandroot.example.angularrestspringsecurity.dao.newsentry.NewsEntryDao;
-import net.dontdrinkandroot.example.angularrestspringsecurity.dao.user.UserDao;
 import net.dontdrinkandroot.example.angularrestspringsecurity.entity.NewsEntry;
 import net.dontdrinkandroot.example.angularrestspringsecurity.entity.User;
+import net.dontdrinkandroot.example.angularrestspringsecurity.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
 
 
-/**
- * Initialize the database with some test entries.
- *
- * @author Philip W. Sorst <philip@sorst.net>
- */
-public class DataBaseInitializer {
+public class DataBaseInitializerService {
 
-    private NewsEntryDao newsEntryDao;
+    @Autowired
+    private NewsService newsService;
+    
+    @Autowired
+    private UserRepository userRepository;
 
-    private UserDao userDao;
-
+    @Autowired
     private PasswordEncoder passwordEncoder;
-
-
-    protected DataBaseInitializer() {
-        /* Default constructor for reflection instantiation */
-    }
-
-
-    public DataBaseInitializer(UserDao userDao, NewsEntryDao newsEntryDao, PasswordEncoder passwordEncoder) {
-        this.userDao = userDao;
-        this.newsEntryDao = newsEntryDao;
-        this.passwordEncoder = passwordEncoder;
-    }
-
 
     public void initDataBase() {
         User userUser = new User("user", this.passwordEncoder.encode("user"));
         userUser.addRole("user");
-        this.userDao.save(userUser);
+        this.userRepository.save(userUser);
 
         User adminUser = new User("admin", this.passwordEncoder.encode("admin"));
         adminUser.addRole("user");
         adminUser.addRole("admin");
-        this.userDao.save(adminUser);
+        this.userRepository.save(adminUser);
 
         long timestamp = System.currentTimeMillis() - 1000 * 60 * 60 * 24;
         for (int i = 0; i < 10; i++) {
             NewsEntry newsEntry = new NewsEntry();
             newsEntry.setContent("This is example content " + i);
             newsEntry.setDate(new Date(timestamp));
-            this.newsEntryDao.save(newsEntry);
+            this.newsService.save(newsEntry);
             timestamp += 1000 * 60 * 60;
         }
     }

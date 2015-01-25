@@ -2,15 +2,16 @@ package net.dontdrinkandroot.example.angularrestspringsecurity.configuration;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import net.dontdrinkandroot.example.angularrestspringsecurity.dao.DataBaseInitializer;
-import net.dontdrinkandroot.example.angularrestspringsecurity.dao.newsentry.JpaNewsEntryDao;
-import net.dontdrinkandroot.example.angularrestspringsecurity.dao.user.JpaUserDao;
-import net.dontdrinkandroot.example.angularrestspringsecurity.rest.AuthenticationTokenProcessingFilter;
-import net.dontdrinkandroot.example.angularrestspringsecurity.rest.UnauthorizedEntryPoint;
+import net.dontdrinkandroot.example.angularrestspringsecurity.resources.auth.AuthenticationTokenProcessingFilter;
+import net.dontdrinkandroot.example.angularrestspringsecurity.resources.auth.UnauthorizedEntryPoint;
+import net.dontdrinkandroot.example.angularrestspringsecurity.services.DataBaseInitializerService;
+import net.dontdrinkandroot.example.angularrestspringsecurity.services.NewsService;
+import net.dontdrinkandroot.example.angularrestspringsecurity.services.UsrService;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpMethod;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -21,6 +22,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -33,8 +35,9 @@ import static net.dontdrinkandroot.example.angularrestspringsecurity.ConfigPrope
 
 
 @Configuration
-@ComponentScan(basePackages = BASE_PACKAGES)
+@ComponentScan(basePackages = {BASE_PACKAGES, "net.dontdrinkandroot.example.angularrestspringsecurity.services"})
 @EnableTransactionManagement
+@EnableJpaRepositories(basePackages = {"net.dontdrinkandroot.example.angularrestspringsecurity.repositories"})
 @EnableWebSecurity
 @PropertySource(PROPERTY_SOURCE)
 public class AppConfig extends WebSecurityConfigurerAdapter {
@@ -89,20 +92,20 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
         return transactionManager;
     }
 
-    @Bean
-    public net.dontdrinkandroot.example.angularrestspringsecurity.dao.user.UserDao userDao() {
-        return new JpaUserDao();
+    @Bean(name = "usrService")
+    public UserDetailsService usrService() {
+        return new UsrService();
     }
-
+    
     @Bean
-    public net.dontdrinkandroot.example.angularrestspringsecurity.dao.newsentry.NewsEntryDao newsEntryDao() {
-        return new JpaNewsEntryDao();
+    public NewsService newService() {
+        return new NewsService();
     }
 
     @Bean(name = "dataBaseInitializer", initMethod = "initDataBase")
-    @DependsOn({"userDao", "newsEntryDao", "passwordEncoder"})
-    public DataBaseInitializer dataBaseInitializer() {
-        return new DataBaseInitializer(userDao(), newsEntryDao(), getPasswordEncoder());
+    @DependsOn({"usrService", "newService", "passwordEncoder"})
+    public DataBaseInitializerService dataBaseInitializer() {
+        return new DataBaseInitializerService();
     }
 
 //    INIT REST COMPONENTS
@@ -120,10 +123,10 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean(name = "authenticationManager")
-    @DependsOn({"userDao", "passwordEncoder"})
+    @DependsOn({"usrService", "passwordEncoder"})
     public AuthenticationManager authenticationManager() {
         try {
-            auth.userDetailsService(userDao()).passwordEncoder(getPasswordEncoder());
+            auth.userDetailsService(usrService()).passwordEncoder(getPasswordEncoder());
             AuthenticationManager authenticationManager = auth.build();
             return authenticationManager;
         } catch (Exception e) {
@@ -162,8 +165,8 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean(name = "authenticationTokenProcessingFilter")
-    @DependsOn("userDao")
+    @DependsOn("usrService")
     public AuthenticationTokenProcessingFilter getAuthenticationTokenProcessingFilter() {
-        return new AuthenticationTokenProcessingFilter(userDao());
+        return new AuthenticationTokenProcessingFilter(usrService());
     }
 }

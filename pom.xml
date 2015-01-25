@@ -1,15 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.dontdrinkandroot.example</groupId>
-    <artifactId>angular-rest-springsecurity</artifactId>
-    <version>0.2.1-SNAPSHOT</version>
+    <groupId>com.github.storytime</groupId>
+    <artifactId>ars</artifactId>
+    <version>0.0.1</version>
     <packaging>war</packaging>
 
     <properties>
         <!-- Spring Security is based on Spring 3.0.7 -->
         <spring.version>4.1.4.RELEASE</spring.version>
         <spring.security.version>3.2.5.RELEASE</spring.security.version>
+        <spring.data.jpa.version>1.7.1.RELEASE</spring.data.jpa.version>
         <jersey.version>1.18.3</jersey.version>
         <slf4j.version>1.7.10</slf4j.version>
         <logback.version>1.1.2</logback.version>
@@ -43,8 +44,7 @@
     </licenses>
 
     <scm>
-        <developerConnection>scm:git:https://github.com/philipsorst/angular-rest-springsecurity.git
-        </developerConnection>
+        <developerConnection>scm:git:https://github.com/philipsorst/angular-rest-springsecurity.git</developerConnection>
     </scm>
 
     <prerequisites>
@@ -84,24 +84,24 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring-orm</artifactId>-->
+            <!--<version>${spring.version}</version>-->
+        <!--</dependency>-->
 
-        <!-- Huh? Spring Jdbc is suddenly marked as provided by spring-orm? -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
+        <!--&lt;!&ndash; Huh? Spring Jdbc is suddenly marked as provided by spring-orm? &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring-jdbc</artifactId>-->
+            <!--<version>${spring.version}</version>-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring-tx</artifactId>-->
+            <!--<version>${spring.version}</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -125,6 +125,12 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
             <version>${spring.security.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>${spring.data.jpa.version}</version>
         </dependency>
 
         <!--JAX-RS-->
