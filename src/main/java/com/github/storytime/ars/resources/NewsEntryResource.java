@@ -1,8 +1,8 @@
-package net.dontdrinkandroot.example.angularrestspringsecurity.resources;
+package com.github.storytime.ars.resources;
 
-import net.dontdrinkandroot.example.angularrestspringsecurity.JsonViews;
-import net.dontdrinkandroot.example.angularrestspringsecurity.entity.NewsEntry;
-import net.dontdrinkandroot.example.angularrestspringsecurity.services.NewsService;
+import com.github.storytime.ars.JsonViews;
+import com.github.storytime.ars.entity.NewsEntry;
+import com.github.storytime.ars.services.NewsService;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;

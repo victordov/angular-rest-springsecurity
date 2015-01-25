@@ -1,6 +1,6 @@
-package net.dontdrinkandroot.example.angularrestspringsecurity.repositories;
+package com.github.storytime.ars.repositories;
 
-import net.dontdrinkandroot.example.angularrestspringsecurity.entity.NewsEntry;
+import com.github.storytime.ars.entity.NewsEntry;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

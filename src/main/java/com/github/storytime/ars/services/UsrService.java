@@ -1,8 +1,8 @@
-package net.dontdrinkandroot.example.angularrestspringsecurity.services;
+package com.github.storytime.ars.services;
 
 
-import net.dontdrinkandroot.example.angularrestspringsecurity.entity.User;
-import net.dontdrinkandroot.example.angularrestspringsecurity.repositories.UserRepository;
+import com.github.storytime.ars.entity.User;
+import com.github.storytime.ars.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

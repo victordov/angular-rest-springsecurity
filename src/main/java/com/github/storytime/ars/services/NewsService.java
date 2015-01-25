@@ -1,7 +1,7 @@
-package net.dontdrinkandroot.example.angularrestspringsecurity.services;
+package com.github.storytime.ars.services;
 
-import net.dontdrinkandroot.example.angularrestspringsecurity.entity.NewsEntry;
-import net.dontdrinkandroot.example.angularrestspringsecurity.repositories.NewsRepository;
+import com.github.storytime.ars.entity.NewsEntry;
+import com.github.storytime.ars.repositories.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

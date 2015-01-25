@@ -1,12 +1,13 @@
-package net.dontdrinkandroot.example.angularrestspringsecurity.configuration;
+package com.github.storytime.ars.configuration;
 
+import com.github.storytime.ars.untils.ConfigProperties;
+import com.github.storytime.ars.resources.auth.AuthenticationTokenProcessingFilter;
+import com.github.storytime.ars.resources.auth.UnauthorizedEntryPoint;
+import com.github.storytime.ars.services.DataBaseInitializerService;
+import com.github.storytime.ars.services.NewsService;
+import com.github.storytime.ars.services.UsrService;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import net.dontdrinkandroot.example.angularrestspringsecurity.resources.auth.AuthenticationTokenProcessingFilter;
-import net.dontdrinkandroot.example.angularrestspringsecurity.resources.auth.UnauthorizedEntryPoint;
-import net.dontdrinkandroot.example.angularrestspringsecurity.services.DataBaseInitializerService;
-import net.dontdrinkandroot.example.angularrestspringsecurity.services.NewsService;
-import net.dontdrinkandroot.example.angularrestspringsecurity.services.UsrService;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
@@ -31,13 +32,13 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-import static net.dontdrinkandroot.example.angularrestspringsecurity.ConfigProperties.*;
+import static com.github.storytime.ars.untils.ConfigProperties.*;
 
 
 @Configuration
-@ComponentScan(basePackages = {BASE_PACKAGES, "net.dontdrinkandroot.example.angularrestspringsecurity.services"})
+@ComponentScan(basePackages = {BASE_PACKAGES, SERVICE_PACKAGE})
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = {"net.dontdrinkandroot.example.angularrestspringsecurity.repositories"})
+@EnableJpaRepositories(basePackages = {REPO_PACKAGE})
 @EnableWebSecurity
 @PropertySource(PROPERTY_SOURCE)
 public class AppConfig extends WebSecurityConfigurerAdapter {

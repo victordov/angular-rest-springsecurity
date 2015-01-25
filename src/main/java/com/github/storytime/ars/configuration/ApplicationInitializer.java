@@ -1,7 +1,7 @@
 /**
  *
  */
-package net.dontdrinkandroot.example.angularrestspringsecurity.configuration;
+package com.github.storytime.ars.configuration;
 
 /**
  * @author Hisham

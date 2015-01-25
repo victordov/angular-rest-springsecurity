@@ -1,4 +1,4 @@
-package net.dontdrinkandroot.example.angularrestspringsecurity.resources.auth;
+package com.github.storytime.ars.resources.auth;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.codec.Hex;

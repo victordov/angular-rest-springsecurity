@@ -1,4 +1,4 @@
-package net.dontdrinkandroot.example.angularrestspringsecurity.entity;
+package com.github.storytime.ars.entity;
 
 import java.io.Serializable;
 

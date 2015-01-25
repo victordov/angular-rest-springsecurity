@@ -1,6 +1,6 @@
-package net.dontdrinkandroot.example.angularrestspringsecurity.entity;
+package com.github.storytime.ars.entity;
 
-import net.dontdrinkandroot.example.angularrestspringsecurity.JsonViews;
+import com.github.storytime.ars.JsonViews;
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import javax.persistence.Column;

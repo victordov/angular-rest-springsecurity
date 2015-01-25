@@ -1,4 +1,4 @@
-package net.dontdrinkandroot.example.angularrestspringsecurity.transfer;
+package com.github.storytime.ars.transfer;
 
 public class TokenTransfer {
 

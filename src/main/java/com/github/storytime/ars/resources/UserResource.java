@@ -1,8 +1,8 @@
-package net.dontdrinkandroot.example.angularrestspringsecurity.resources;
+package com.github.storytime.ars.resources;
 
-import net.dontdrinkandroot.example.angularrestspringsecurity.resources.auth.TokenUtils;
-import net.dontdrinkandroot.example.angularrestspringsecurity.transfer.TokenTransfer;
-import net.dontdrinkandroot.example.angularrestspringsecurity.transfer.UserTransfer;
+import com.github.storytime.ars.resources.auth.TokenUtils;
+import com.github.storytime.ars.transfer.TokenTransfer;
+import com.github.storytime.ars.transfer.UserTransfer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;

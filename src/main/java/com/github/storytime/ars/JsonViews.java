@@ -1,4 +1,4 @@
-package net.dontdrinkandroot.example.angularrestspringsecurity;
+package com.github.storytime.ars;
 
 public class JsonViews {
 
